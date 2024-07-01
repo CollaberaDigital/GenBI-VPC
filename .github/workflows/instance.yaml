@@ -60,7 +60,7 @@ jobs:
         working-directory: .
 
       - name: Terraform Apply
-        run: terraform apply -var vpc_name=${{ github.event.inputs.vpcName }} -var vpc_cidr_block=${{ github.event.inputs.vpcCidrBlock }} -var subnet_cidr_block=${{ github.event.inputs.subnetCidrBlock }} -var availability_zone=${{ github.event.inputs.availabilityZone }} -var aws_region=${{ github.event.inputs.awsRegion }} -auto-approve
+        run: terraform apply -var vpc_name=${{ github.event.inputs.vpc_name }} -var vpc_cidr_block=${{ github.event.inputs.vpc_cidr_block }} -var subnet_cidr_block=${{ github.event.inputs.subnet_cidr_block }} -var availability_zone=${{ github.event.inputs.availability_zone }} -var aws_region=${{ github.event.inputs.aws_region }} -auto-approve
         working-directory: .
 
   # Job for destroying the VPC and Subnets
