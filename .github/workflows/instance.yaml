@@ -6,19 +6,19 @@ on:
   workflow_dispatch:
     # Define inputs that are required for the manual trigger
     inputs:
-      vpcName:
+      vpc_name:
         description: 'Name of the AWS VPC'
         required: true
-      vpcCidrBlock:
+      vpc_cidr_block:
         description: 'CIDR Block for the VPC'
         required: true
-      subnetCidrBlock:
+      subnet_cidr_block:
         description: 'CIDR Block for the Subnet'
         required: true
-      availabilityZone:
+      availability_zone:
         description: 'AWS Availability Zone for the Subnet'
         required: true
-      awsRegion:
+      aws_region:
         description: 'AWS Region for the resources'
         required: true
       action:
