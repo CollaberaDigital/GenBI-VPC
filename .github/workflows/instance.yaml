@@ -1,0 +1,94 @@
+# Define the name of the GitHub Action workflow
+name: Create VPC and Subnets
+
+# This workflow is manually triggered using the GitHub Actions UI
+on:
+  workflow_dispatch:
+    # Define inputs that are required for the manual trigger
+    inputs:
+      vpcName:
+        description: 'Name of the AWS VPC'
+        required: true
+      vpcCidrBlock:
+        description: 'CIDR Block for the VPC'
+        required: true
+      subnetCidrBlock:
+        description: 'CIDR Block for the Subnet'
+        required: true
+      availabilityZone:
+        description: 'AWS Availability Zone for the Subnet'
+        required: true
+      awsRegion:
+        description: 'AWS Region for the resources'
+        required: true
+      action:
+        description: 'Action to perform (apply/destroy)'
+        required: true
+
+# Jobs to be executed in this workflow
+jobs:
+  # Job for applying the VPC and Subnets
+  apply_vpc_and_subnets:
+    # Use the self-hosted runner
+    runs-on: self-hosted  # Or any specific label assigned to your self-hosted runner
+
+    # Execute this step only if the action input is "apply"
+    if: ${{ github.event.inputs.action == 'apply' }}
+    
+    # Define the steps for this job
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ github.event.inputs.awsRegion }}
+
+      - name: Terraform Init
+        run: terraform init
+        working-directory: .
+
+      - name: Terraform Format
+        run: terraform fmt
+        working-directory: .
+
+      - name: Terraform Validate
+        run: terraform validate
+        working-directory: .
+
+      - name: Terraform Apply
+        run: terraform apply -var vpc_name=${{ github.event.inputs.vpcName }} -var vpc_cidr_block=${{ github.event.inputs.vpcCidrBlock }} -var subnet_cidr_block=${{ github.event.inputs.subnetCidrBlock }} -var availability_zone=${{ github.event.inputs.availabilityZone }} -var aws_region=${{ github.event.inputs.awsRegion }} -auto-approve
+        working-directory: .
+
+  # Job for destroying the VPC and Subnets
+  destroy_vpc_and_subnets:
+    runs-on: self-hosted  # Or any specific label assigned to your self-hosted runner
+
+    # Execute this job only if the action input is "destroy"
+    if: ${{ github.event.inputs.action == 'destroy' }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ github.event.inputs.awsRegion }}
+
+      - name: Terraform Init
+        run: terraform init
+        working-directory: .
+
+      - name: Terraform FMT
+        run: terraform fmt
+        working-directory: .
+
+      - name: Terraform Destroy
+        run: terraform destroy -var vpc_name=${{ github.event.inputs.vpcName }} -var vpc_cidr_block=${{ github.event.inputs.vpcCidrBlock }} -var subnet_cidr_block=${{ github.event.inputs.subnetCidrBlock }} -var availability_zone=${{ github.event.inputs.availabilityZone }} -var aws_region=${{ github.event.inputs.awsRegion }} -auto-approve
+        working-directory: .
