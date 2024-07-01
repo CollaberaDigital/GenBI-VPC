@@ -1,24 +1,24 @@
-variable "aws_region" {
+variable "awsRegion" {
   type    = string
   default = "us-east-1"
 }
 
-variable "vpc_name" {
+variable "vpcName" {
   type        = string
   description = "Name of the VPC to create"
 }
 
-variable "vpc_cidr_block" {
+variable "vpcCidrBlock" {
   type        = string
   description = "CIDR block for the VPC"
 }
 
-variable "subnet_cidr_block" {
+variable "subnetCidrBlock" {
   type        = string
   description = "CIDR block for the subnet"
 }
 
-variable "availability_zone" {
+variable "availabilityZone" {
   type        = string
   description = "AWS Availability Zone for the subnet"
 }
